@@ -143,7 +143,7 @@ internal partial class MainWindow : Window
                     ImGuiController.AddPostdrawAction(() => _settings.ColorPreset.RemoveAt(currentIndex));
                 }
                 ImGui.EndDisabled();
-                Tooltip("Ctrlを押しながらクリック", ImGuiHoveredFlags.AllowWhenDisabled);
+                ImGuiC.Tooltip("Ctrlを押しながらクリック", ImGuiHoveredFlags.AllowWhenDisabled);
                 i++;
             }
             ImGui.EndCombo();
@@ -195,14 +195,6 @@ internal partial class MainWindow : Window
                 ImGuiController.FocusWindow();
                 ModalHelper.ShowModal("Success", "Save finished");
             }
-        }
-    }
-
-    public static void Tooltip(string text, ImGuiHoveredFlags flags = ImGuiHoveredFlags.None)
-    {
-        if (ImGui.IsItemHovered(flags))
-        {
-            ImGuiC.SetTooltip(text);
         }
     }
 }
