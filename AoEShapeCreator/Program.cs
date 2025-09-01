@@ -5,7 +5,7 @@ internal class Program
 {
     private static void Main()
     {
-        ImGuiController.Initialize(nameof(AoEShapeCreator), 450, 430);
+        ImGuiController.Initialize(nameof(AoEShapeCreator), 450, 450, false);
         ImGuiController.AddWindow(new MainWindow());
         ImGuiController.Run();
         Console.WriteLine($"{nameof(AoEShapeCreator)} has exited...");

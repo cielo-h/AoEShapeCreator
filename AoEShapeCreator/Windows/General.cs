@@ -44,20 +44,46 @@ internal partial class MainWindow : Window
                 break;
             default: break;
         }
-        ImGui.Checkbox("中心に点を追加", ref _settings.AddCenterDot);
         ImGui.SetNextItemWidth(100f);
-        ImGui.InputFloat("中心点の半径", ref _settings.CenterDotRadius);
+        ImGui.InputFloat("縮尺", ref _settings.ScaleFactor, "%.2f 倍");
+
+        ImGui.SeparatorText("色設定");
+
         ImGui.PushItemWidth(200f);
         ImGui.ColorEdit4("色", ref _settings.Color);
+
+        var alpha = _settings.Color.W * 100.0f;
         ImGui.SameLine();
+        ImGui.SetNextItemWidth(50f);
+        var format = (alpha == MathF.Floor(alpha)) ? "%.0f %%" : "%.2f %%";
+        if (ImGui.InputFloat("透明度##GeneralColor", ref alpha, format))
+        {
+            _settings.Color.W = Math.Clamp(alpha / 100.0f, 0f, 1f);
+        }
+
         if (ImGui.Button("プリセットに追加##GeneralColor"))
         {
             if (!_settings.ColorPreset.Contains(_settings.Color)) _settings.ColorPreset.Add(_settings.Color);
         }
         var color = ColorPresetCombo("GeneralColor");
         if (color.HasValue) _settings.Color = color.Value;
+
+        ImGui.SeparatorText("中心点設定");
+
+        ImGui.Checkbox("中心に点を追加", ref _settings.AddCenterDot);
+        ImGui.SetNextItemWidth(100f);
+        ImGui.InputFloat("中心点の半径", ref _settings.CenterDotRadius);
         ImGui.ColorEdit4("中心点の色", ref _settings.CenterDotColor);
+
+        alpha = _settings.CenterDotColor.W * 100.0f;
         ImGui.SameLine();
+        ImGui.SetNextItemWidth(50f);
+        format = (alpha == MathF.Floor(alpha)) ? "%.0f %%" : "%.2f %%";
+        if (ImGui.InputFloat("透明度##CenterPoint", ref alpha, format))
+        {
+            _settings.CenterDotColor.W = Math.Clamp(alpha / 100.0f, 0f, 1f);
+        }
+
         if (ImGui.Button("プリセットに追加##CenterDotColor"))
         {
             if (!_settings.ColorPreset.Contains(_settings.CenterDotColor)) _settings.ColorPreset.Add(_settings.CenterDotColor);
@@ -65,8 +91,6 @@ internal partial class MainWindow : Window
         var color2 = ColorPresetCombo("CenterDotColor");
         if (color2.HasValue) _settings.CenterDotColor = color2.Value;
         ImGui.PopItemWidth();
-        ImGui.SetNextItemWidth(100f);
-        ImGui.InputFloat("縮尺", ref _settings.ScaleFactor);
         CreateButton();
     }
 
@@ -81,6 +105,7 @@ internal partial class MainWindow : Window
     {
         ImGui.PushItemWidth(100f);
         ImGui.InputFloat($"内径", ref _settings.InnerRadius);
+        ImGui.SameLine();
         ImGui.InputFloat($"外径", ref _settings.OuterRadius);
         ImGui.PopItemWidth();
     }
@@ -89,6 +114,7 @@ internal partial class MainWindow : Window
     {
         ImGui.PushItemWidth(100f);
         ImGui.InputFloat("半径", ref _settings.FanRadius);
+        ImGui.SameLine();
         ImGui.InputFloat("角度", ref _settings.FanAngle);
         ImGui.PopItemWidth();
     }
@@ -97,6 +123,7 @@ internal partial class MainWindow : Window
     {
         ImGui.PushItemWidth(100f);
         ImGui.InputFloat("幅", ref _settings.RectangleWidth);
+        ImGui.SameLine();
         ImGui.InputFloat("高さ", ref _settings.RectangleHeight);
         ImGui.PopItemWidth();
     }
@@ -105,7 +132,9 @@ internal partial class MainWindow : Window
     {
         ImGui.PushItemWidth(100f);
         ImGui.InputFloat("内径", ref _settings.HollowRadius);
+        ImGui.SameLine();
         ImGui.InputFloat("外径", ref _settings.FanRadius);
+        ImGui.SameLine();
         ImGui.InputFloat("角度", ref _settings.FanAngle);
         ImGui.PopItemWidth();
     }
@@ -132,7 +161,7 @@ internal partial class MainWindow : Window
             {
                 var currentIndex = i;
                 var c = color;
-                ImGui.ColorEdit4($"##ColorEdit-{label}-{currentIndex}", ref c, ImGuiColorEditFlags.NoInputs);
+                ImGui.ColorEdit4($"##ColorEdit-{label}-{currentIndex}", ref c, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoPicker);
                 ImGui.SameLine();
                 var num = ImGui.ColorConvertFloat4ToU32(c);
                 if (ImGui.Selectable($"{num:X}", size: selectableSize)) ret = c;
